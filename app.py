@@ -148,8 +148,8 @@ if st.session_state.page == 'home':
     st.write("## Created by: Amanullah Khan")
     c1, c2, c3 = st.columns([1,1.5,1])
     with c2:
-        st.write("###  Create your squad")
-        # ADDED TEAM 7 AND TEAM 8 HERE
+        st.write("### Create your squad")
+        # UPDATED: Team 7 and Team 8 added to selection
         t = st.selectbox("Select Your Team", ["Kaptan XI", "Pak Eagles", "Riyadh Badshahs", "Riyadh Mavericks", "Riyadh Stallions", "Wazirabad Stars", "Team 7", "Team 8"])
         p = st.text_input("Enter Password", type="password")
         if st.button("Enter Dashboard", use_container_width=True):
@@ -165,11 +165,13 @@ if st.session_state.page == 'home':
         if admin_pass == "Pakistan1947":
             col_lock, col_unlock = st.columns(2)
             if col_lock.button("🔒 LOCK ALL", use_container_width=True):
-                supabase.table("squads").update({"is_locked": True}).neq("team_name", "temp").execute()
+                # UPDATED: Points to squads_v2
+                supabase.table("squads_v2").update({"is_locked": True}).neq("team_name", "temp").execute()
                 st.success("All squads LOCKED.")
             
             if col_unlock.button("🔓 UNLOCK ALL", use_container_width=True):
-                supabase.table("squads").update({"is_locked": False}).neq("team_name", "temp").execute()
+                # UPDATED: Points to squads_v2
+                supabase.table("squads_v2").update({"is_locked": False}).neq("team_name", "temp").execute()
                 st.success("All squads UNLOCKED.")
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -178,7 +180,8 @@ elif st.session_state.page == 'squad':
     team = st.session_state.team
     st.markdown('<div class="squad-container"></div>', unsafe_allow_html=True)
     
-    res = supabase.table("squads").select("*").eq("team_name", team).execute()
+    # UPDATED: Points to squads_v2
+    res = supabase.table("squads_v2").select("*").eq("team_name", team).execute()
     
     if not res.data:
         st.error(f"Team '{team}' not found in database. Check spelling or SQL setup.")
@@ -209,7 +212,7 @@ elif st.session_state.page == 'squad':
             st.markdown(f'<div class="logo-circle"><img src="data:image/jpeg;base64,{team_logo}"></div>', unsafe_allow_html=True)
         else:
             st.markdown('<div class="logo-circle"></div>', unsafe_allow_html=True)
-        # --- LOGO UPLOAD BUTTON ADDED HERE ---
+        
         if edit_mode:
             logo_up = st.file_uploader("L", key="logo_up_input", label_visibility="collapsed")
             if logo_up:
@@ -261,7 +264,8 @@ elif st.session_state.page == 'squad':
     if edit_mode:
         st.write("---")
         if st.button("💾 SAVE ALL CHANGES", type="primary", use_container_width=True):
-            supabase.table("squads").update({
+            # UPDATED: Points to squads_v2
+            supabase.table("squads_v2").update({
                 "captain_name": cap_name,
                 "player_list": names,
                 "squad_pics": pics,
